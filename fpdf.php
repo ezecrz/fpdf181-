@@ -149,18 +149,6 @@ function __construct($orientation='P', $unit='mm', $size='A4')
 		$this->Error('Incorrect orientation: '.$orientation);
 	$this->CurOrientation = $this->DefOrientation;
 	$this->wPt = $this->w*$this->k;
-	$this->hPt = $this->h*$this->k;    
-} else {
-    $this->Error('Incorrect orientation: ' . $orientation);
-}
-$this->CurOrientation = $this->DefOrientation;
-$this->wPt = $this->w * $this->k;
-$this->hPt = $this->h * $this->k;
-	}
-	else
-		$this->Error('Incorrect orientation: '.$orientation);
-	$this->CurOrientation = $this->DefOrientation;
-	$this->wPt = $this->w*$this->k;
 	$this->hPt = $this->h*$this->k;
 	// Page rotation
 	$this->CurRotation = 0;
