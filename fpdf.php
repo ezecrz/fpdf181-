@@ -71,142 +71,81 @@ protected $PDFVersion;         // PDF version number
 *                               Public methods                                 *
 *******************************************************************************/
 
-function __construct($orientation = 'P', $unit = 'mm', $size = 'A4') {
-    // Initialization of properties
-    $this->initializeProperties();
-
-    // Set font path
-    $this->setFontPath();
-
-    // Set unit and scale factor
-    $this->setUnitAndScaleFactor($unit);
-
-    // Set page size and orientation
-    $this->setPageSizeAndOrientation($size, strtolower($orientation));
-
-    // Set remaining default values
-    $this->setDefaults();
-}
-
-private function initializeProperties() {
-    $this->state = 0;
-    $this->page = 0;
-    $this->n = 2;
-    $this->buffer = '';
-    $this->pages = array();
-    $this->PageInfo = array();
-    $this->fonts = array();
-    $this->FontFiles = array();
-    $this->encodings = array();
-    $this->cmaps = array();
-    $this->images = array();
-    $this->links = array();
-    $this->InHeader = false;
-    $this->InFooter = false;
-    $this->lasth = 0;
-    $this->FontFamily = '';
-    $this->FontStyle = '';
-    $this->FontSizePt = 12;
-    $this->underline = false;
-    $this->DrawColor = '0 G';
-    $this->FillColor = '0 g';
-    $this->TextColor = '0 g';
-    $this->ColorFlag = false;
-    $this->WithAlpha = false;
-    $this->ws = 0;
-    $this->CoreFonts = array('courier', 'helvetica', 'times', 'symbol', 'zapfdingbats');
-    $this->StdPageSizes = array(
-        'a3' => array(841.89, 1190.55),
-        'a4' => array(595.28, 841.89),
-        'a5' => array(420.94, 595.28),
-        'letter' => array(612, 792),
-        'legal' => array(612, 1008),
-    );
-}
-
-private function setFontPath() {
-    if (defined('FPDF_FONTPATH')) {
-        $this->fontpath = FPDF_FONTPATH;
-        if (substr($this->fontpath, -1) !== '/' && substr($this->fontpath, -1) !== '\\') {
-            $this->fontpath .= '/';
-        }
-    } elseif (is_dir(dirname(__FILE__) . '/font')) {
-        $this->fontpath = dirname(__FILE__) . '/font/';
-    } else {
-        $this->fontpath = '';
-    }
-}
-
-private function setUnitAndScaleFactor(<span class="math-inline">unit\) \{
-switch \(</span>unit) {
-        case 'pt':
-            $this->k = 1;
-            break;
-        case 'mm':
-            $this->k = 72 / 25.4;
-            break;
-        case 'cm':
-            $this->k = 72 / 2.54;
-            break;
-        case 'in':
-            $this->k = 72;
-            break;
-        default:
-            $this->Error('Incorrect unit: ' . $unit);
-    }
-}
-
-private function setPageSizeAndOrientation($size, $orientation) {
-    $this->size = $this->_getpagesize($size);
-    $this->DefPageSize = $this->size;
-    $this->CurPageSize = $this->size;
-
-    if ($orientation === 'p' || $orientation === 'portrait') {
-        $this->DefOrientation = 'P';
-        $this->w = $this->size[0];
-        $this->h = $this->size[1];
-    } elseif ($orientation === 'l' || $orientation === 'landscape') {
-        $this->DefOrientation = 'L';
-        $this->w = $this->size[1];
-        $this->h = $this->size[0];
-    } else {
-        $this->Error('Incorrect orientation: ' . $orientation);
-    }
-
-    $this->
-private function setUnit($unit) {
-    switch ($unit) {
-        case 'pt':
-            $this->k = 1;
-            break;
-        case 'mm':
-            $this->k = 72 / 25.4;
-            break;
-        case 'cm':
-            $this->k = 72 / 2.54;
-            break;
-        case 'in':
-            $this->k = 72;
-            break;
-        default:
-            $this->Error('Incorrect unit: ' . $unit);
-    }
-}
-
-private function setOrientation($orientation) {
-    $orientation = strtolower($orientation);
-    if ($orientation === 'p' || $orientation === 'portrait') {
-        $this->DefOrientation = 'P';
-        $this->w = $this->size[0];
-        $this->h = $this->size[1];
-    } elseif ($orientation === 'l' || $orientation === 'landscape') {
-        $this->DefOrientation = 'L';
-        $this->w = $this->size[1];
-        $this->h = $this->size[0];
-    } else {
-        $this->Error('Incorrect orientation: ' . $orientation);
-    }
-}
+function __construct($orientation='P', $unit='mm', $size='A4')
+{
+	// Some checks
+	$this->_dochecks();
+	// Initialization of properties
+	$this->state = 0;
+	$this->page = 0;
+	$this->n = 2;
+	$this->buffer = '';
+	$this->pages = array();
+	$this->PageInfo = array();
+	$this->fonts = array();
+	$this->FontFiles = array();
+	$this->encodings = array();
+	$this->cmaps = array();
+	$this->images = array();
+	$this->links = array();
+	$this->InHeader = false;
+	$this->InFooter = false;
+	$this->lasth = 0;
+	$this->FontFamily = '';
+	$this->FontStyle = '';
+	$this->FontSizePt = 12;
+	$this->underline = false;
+	$this->DrawColor = '0 G';
+	$this->FillColor = '0 g';
+	$this->TextColor = '0 g';
+	$this->ColorFlag = false;
+	$this->WithAlpha = false;
+	$this->ws = 0;
+	// Font path
+	if(defined('FPDF_FONTPATH'))
+	{
+		$this->fontpath = FPDF_FONTPATH;
+		if(substr($this->fontpath,-1)!='/' && substr($this->fontpath,-1)!='\\')
+			$this->fontpath .= '/';
+	}
+	elseif(is_dir(dirname(__FILE__).'/font'))
+		$this->fontpath = dirname(__FILE__).'/font/';
+	else
+		$this->fontpath = '';
+	// Core fonts
+	$this->CoreFonts = array('courier', 'helvetica', 'times', 'symbol', 'zapfdingbats');
+	// Scale factor
+	if($unit=='pt')
+		$this->k = 1;
+	elseif($unit=='mm')
+		$this->k = 72/25.4;
+	elseif($unit=='cm')
+		$this->k = 72/2.54;
+	elseif($unit=='in')
+		$this->k = 72;
+	else
+		$this->Error('Incorrect unit: '.$unit);
+	// Page sizes
+	$this->StdPageSizes = array('a3'=>array(841.89,1190.55), 'a4'=>array(595.28,841.89), 'a5'=>array(420.94,595.28),
+		'letter'=>array(612,792), 'legal'=>array(612,1008));
+	$size = $this->_getpagesize($size);
+	$this->DefPageSize = $size;
+	$this->CurPageSize = $size;
+	// Page orientation
+	$orientation = strtolower($orientation);
+	if($orientation=='p' || $orientation=='portrait')
+	{
+		$this->DefOrientation = 'P';
+		$this->w = $size[0];
+		$this->h = $size[1];
+	}
+	elseif($orientation=='l' || $orientation=='landscape')
+	{
+		$this->DefOrientation = 'L';
+		$this->w = $size[1];
+		$this->h = $size[0];
+	}
+	else
 		$this->Error('Incorrect orientation: '.$orientation);
 	$this->CurOrientation = $this->DefOrientation;
 	$this->wPt = $this->w*$this->k;
@@ -377,8 +316,7 @@ function AddPage($orientation='', $size='', $rotation=0)
 	$this->_out('2 J');
 	// Set line width
 	$this->LineWidth = $lw;
-	const FORMAT_STRING = '%.2F w';
-	$this->_out(sprintf(FORMAT_STRING, $lw * $this->k));
+	$this->_out(sprintf('%.2F w',$lw*$this->k));
 	// Set font
 	if($family)
 		$this->SetFont($family,$style,$fontsize);
