@@ -71,8 +71,45 @@ protected $PDFVersion;         // PDF version number
 *                               Public methods                                 *
 *******************************************************************************/
 
-function __construct($orientation='P', $unit='mm', $size='A4')
+function __construct($orientation='P', $unit='mm', $size='A4') 
 {
+    $this->orientation = $this->getOrientation($orientation);
+    $this->unit = $unit;
+    $this->size = $size;
+    $this->initializeSettings();
+}
+
+private function getOrientation($orientation)
+{
+    $validOrientations = ['P', 'L'];
+    return in_array($orientation, $validOrientations) ? $orientation : 'P';
+}
+
+private function initializeSettings()
+{
+    // Ejemplo de simplificación de lógica compleja a funciones separadas
+    $this->initializeUnitSettings();
+    $this->initializeSizeSettings();
+}
+
+private function initializeUnitSettings()
+{
+    if ($this->unit == 'mm') {
+        // Lógica para mm
+    } elseif ($this->unit == 'cm') {
+        // Lógica para cm
+    }
+}
+
+private function initializeSizeSettings()
+{
+    if ($this->size == 'A4') {
+        // Lógica para A4
+    } elseif ($this->size == 'A3') {
+        // Lógica para A3
+    }
+}
+
 	// Some checks
 	$this->_dochecks();
 	// Initialization of properties
