@@ -316,7 +316,8 @@ function AddPage($orientation='', $size='', $rotation=0)
 	$this->_out('2 J');
 	// Set line width
 	$this->LineWidth = $lw;
-	$this->_out(sprintf('%.2F w',$lw*$this->k));
+	const FORMAT_STRING = '%.2F w';
+	$this->_out(sprintf(FORMAT_STRING, $lw * $this->k));
 	// Set font
 	if($family)
 		$this->SetFont($family,$style,$fontsize);
