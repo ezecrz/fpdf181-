@@ -71,8 +71,25 @@ protected $PDFVersion;         // PDF version number
 *                               Public methods                                 *
 *******************************************************************************/
 	
-function __construct($orientation='P', $unit='mm', $size='A4') 
-{
+function __construct($orientation='P', $unit='mm', $size='A4') {
+    $this->orientation = $this->validateOrientation($orientation);
+    $this->unit = $this->validateUnit($unit);
+    $this->size = $this->validateSize($size);
+}
+
+private function validateOrientation($orientation) {
+    return ($orientation == 'P' || $orientation == 'L') ? $orientation : 'P';
+}
+
+private function validateUnit($unit) {
+    $validUnits = ['mm', 'cm'];
+    return in_array($unit, $validUnits) ? $unit : 'mm';
+}
+
+private function validateSize($size) {
+    $validSizes = ['A4', 'A3'];
+    return in_array($size, $validSizes) ? $size : 'A4';
+}
 
 	// Some checks
 	$this->_dochecks();
