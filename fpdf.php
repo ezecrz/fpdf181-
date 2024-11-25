@@ -72,25 +72,20 @@ protected $PDFVersion;         // PDF version number
 *******************************************************************************/
 
 function __construct($orientation = 'P', $unit = 'mm', $size = 'A4') {
-    // Some checks
-    $this->_dochecks();
-
     // Initialization of properties
     $this->initializeProperties();
 
-    // Font path
+    // Set font path
     $this->setFontPath();
 
-    // Scale factor
-    $this->setUnit($unit);
+    // Set unit and scale factor
+    $this->setUnitAndScaleFactor($unit);
 
-    // Page sizes
-    $this->size = $this->_getpagesize($size);
-    $this->DefPageSize = $this->size;
-    $this->CurPageSize = $this->size;
+    // Set page size and orientation
+    $this->setPageSizeAndOrientation($size, strtolower($orientation));
 
-    // Page orientation
-    $this->setOrientation(strtolower($orientation));
+    // Set remaining default values
+    $this->setDefaults();
 }
 
 private function initializeProperties() {
@@ -142,6 +137,43 @@ private function setFontPath() {
     }
 }
 
+private function setUnitAndScaleFactor(<span class="math-inline">unit\) \{
+switch \(</span>unit) {
+        case 'pt':
+            $this->k = 1;
+            break;
+        case 'mm':
+            $this->k = 72 / 25.4;
+            break;
+        case 'cm':
+            $this->k = 72 / 2.54;
+            break;
+        case 'in':
+            $this->k = 72;
+            break;
+        default:
+            $this->Error('Incorrect unit: ' . $unit);
+    }
+}
+
+private function setPageSizeAndOrientation($size, $orientation) {
+    $this->size = $this->_getpagesize($size);
+    $this->DefPageSize = $this->size;
+    $this->CurPageSize = $this->size;
+
+    if ($orientation === 'p' || $orientation === 'portrait') {
+        $this->DefOrientation = 'P';
+        $this->w = $this->size[0];
+        $this->h = $this->size[1];
+    } elseif ($orientation === 'l' || $orientation === 'landscape') {
+        $this->DefOrientation = 'L';
+        $this->w = $this->size[1];
+        $this->h = $this->size[0];
+    } else {
+        $this->Error('Incorrect orientation: ' . $orientation);
+    }
+
+    $this->
 private function setUnit($unit) {
     switch ($unit) {
         case 'pt':
