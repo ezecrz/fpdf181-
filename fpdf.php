@@ -208,8 +208,9 @@ function SetMargins($left, $top, $right=null)
 	// Set left, top and right margins
 	$this->lMargin = $left;
 	$this->tMargin = $top;
-	if($right===null)
+	if($right===null){
 		$right = $left;
+	}
 	$this->rMargin = $right;
 }
 
